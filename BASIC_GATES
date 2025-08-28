@@ -1,1 +1,48 @@
-hello
+// AND GATE
+
+Design Code
+
+// Gate level Modelling 
+module and_gate(input a,b,output y);
+nand a1(y,a,b);
+endmodule
+
+/*
+Behavioral Modelling
+
+module nand_gate(input a,b,output y);
+output reg y;
+always@(*)
+begin
+y=~(a&b);
+end
+endmodule
+
+//Data Level Modelling
+
+module and_gate(input a,b,output y);
+assign y=~(a&b);
+endmodule
+*/
+
+Testbench Code
+
+module and_gate();
+wire y;
+reg a,b;
+
+and_gate dut(a,b,y);
+initial 
+begin
+a=0;b=0;#10;
+a=0;b=1;#10;
+a=1;b=0;#10;
+a=1;b=1;#10;
+end
+initial
+begin
+$monitor("time=%t,ns,a=%b,b=%b,y=%b",$time,a,b,y);
+end 
+endmodule
+
+
