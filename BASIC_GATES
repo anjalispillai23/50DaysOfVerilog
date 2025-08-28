@@ -1,14 +1,13 @@
 // AND GATE
 
-Design Code
+//Design Code
 
 // Gate level Modelling 
 module and_gate(input a,b,output y);
 nand a1(y,a,b);
 endmodule
 
-/*
-Behavioral Modelling
+//Behavioral Modelling
 
 module nand_gate(input a,b,output y);
 output reg y;
@@ -23,9 +22,9 @@ endmodule
 module and_gate(input a,b,output y);
 assign y=~(a&b);
 endmodule
-*/
 
-Testbench Code
+
+//Testbench Code
 
 module and_gate();
 wire y;
@@ -44,5 +43,28 @@ begin
 $monitor("time=%t,ns,a=%b,b=%b,y=%b",$time,a,b,y);
 end 
 endmodule
+
+//NOT GATE
+
+//Design Code
+// Gate level Modelling
+
+module not_gate_(input a, output y);
+not n1(y,a);
+endmodule
+
+//Behavioral Modelling
+
+module not_gate(input a,output y);
+output reg y;
+always@(*)
+y=!a;
+endmodule
+
+//Data flow level modelling
+
+module not_gate(input a,output y)
+assign y=!a;
+endmodule*/
 
 
