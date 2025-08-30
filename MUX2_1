@@ -1,0 +1,31 @@
+//Design Code
+
+module mux2_1(input sel,i0,i1,output y);
+assign y=sel?i1:i0;
+endmodule
+
+//Testbench
+
+module mux2_1_tb();
+reg sel,i0,i1;
+wire y;
+integer i;
+mux2_1 dut(.sel(sel),.i0(i0),.i1(i1),.y(y));
+
+initial
+begin
+
+for(i=0;i<8;i=i+1)
+begin
+{sel,i0,i1}=i;
+#10;
+end
+end
+initial
+begin
+    $monitor("Time=%0t | sel=%b | i0=%b | i1=%b | y=%b", 
+              $time, sel, i0, i1, y);
+end
+
+endmodule
+
