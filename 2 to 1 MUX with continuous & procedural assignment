@@ -1,0 +1,52 @@
+// Implement 2 to 1 MUX with continuous assignment & procedural assignment.
+Design Code
+
+module mux2x1_cont_beh(sel,i0,i1,yp,yc);
+input sel,i0,i1;
+output reg yp;
+output yc;
+
+assign yc=sel?i1:i0;
+always@(*)
+begin
+if(sel)
+yp=i1;
+else
+yp=i0;
+end
+endmodule
+
+//Testbench
+module tb_mux2x1_cont_beh();
+reg sel,i0,i1;
+wire yp,yc;
+
+mux2x1_cont_beh dut(.sel(sel),.i0(i0),.i1(i1),.yp(yp),.yc(yc));
+
+initial
+begin
+ sel=1'b0;i1=1'b0;i0=1'b0;#10;
+ sel=1'bx;i1=1'b0;i0=1'b0;#10;
+ sel=1'b0;i1=1'b0;i0=1'b1;#10;
+ sel=1'bx;i1=1'b0;i0=1'b1;#10;
+ sel=1'b0;i1=1'b1;i0=1'b0;#10;
+ sel=1'bx;i1=1'b1;i0=1'b0;#10;
+ sel=1'b0;i1=1'b1;i0=1'b1;#10;
+ sel=1'bx;i1=1'b1;i0=1'b1;#10;
+ sel=1'b1;i1=1'b0;i0=1'b0;#10;
+ sel=1'bx;i1=1'b0;i0=1'b0;#10;
+ sel=1'b1;i1=1'b0;i0=1'b1;#10;
+ sel=1'bx;i1=1'b0;i0=1'b1;#10;
+ sel=1'b1;i1=1'b1;i0=1'b0;#10;
+ sel=1'bx;i1=1'b1;i0=1'b0;#10;
+ sel=1'b1;i1=1'b1;i0=1'b1;#10;
+ sel=1'bx;i1=1'b1;i0=1'b1;#10;
+
+end
+initial
+begin
+$monitor("Time=%t |sel=%b |i1=%b |i0=%b |yp=%b|yc=%b |",$time,sel,i1,i0,yp,yc);
+#500;
+$finish();
+end
+endmodule
