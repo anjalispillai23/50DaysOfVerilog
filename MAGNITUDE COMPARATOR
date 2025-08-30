@@ -1,0 +1,67 @@
+//Design Code
+module mag_comparator(
+input[3:0]a,
+input[3:0]b,
+output reg a_greater_b,
+output reg a_less_b,
+output reg a_eq_b);
+
+always@(*)
+begin
+	if(a>b)
+begin
+		a_greater_b=1'b1;
+		a_less_b=1'b0;
+		a_eq_b=1'b0;
+end
+else if(a<b)
+begin
+a_less_b=1'b1;
+a_greater_b=1'b0;
+a_eq_b=1'b0;
+end
+	else
+begin
+a_eq_b=1'b1;
+a_less_b=1'b0;
+a_greater_b=1'b0;
+end
+end
+endmodule
+
+//Testbench
+
+module mag_comparator_tb();
+reg [3:0]a,b;
+wire a_greater_b,a_less_b,a_eq_b;
+
+mag_comparator dut(a,b,a_greater_b,a_less_b,a_eq_b);
+
+initial
+begin
+a=4'b0000;b=4'b0000;#10;
+a=4'b0001;b=4'b0101;#10;
+a=4'b0010;b=4'b0111;#10;
+a=4'b0011;b=4'b1111;#10;
+a=4'b0100;b=4'b1100;#10;
+a=4'b0101;b=4'b0001;#10;
+a=4'b0110;b=4'b0110;#10;
+a=4'b0111;b=4'b1101;#10;
+a=4'b1000;b=4'b0100;#10;
+a=4'b1001;b=4'b0011;#10;
+a=4'b1010;b=4'b1101;#10;
+a=4'b1011;b=4'b1000;#10;
+a=4'b1100;b=4'b1001;#10;
+a=4'b1101;b=4'b0010;#10;
+a=4'b1110;b=4'b1010;#10;
+a=4'b1111;b=4'b1110;#10;
+end
+initial
+begin
+$monitor("time=%t,ns,a=%b,b=%b,a_greater_b=%b,a_less_b=%b,a_eq_b=%b",$time,a,b,a_greater_b,a_less_b,a_eq_b);
+end
+endmodule
+
+
+	
+
