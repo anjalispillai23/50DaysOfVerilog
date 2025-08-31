@@ -1,0 +1,44 @@
+//Design Code
+
+module mux4_1(i0,i1,i2,i3,s0,s1,y);
+input i0,i1,i2,i3,s0,s1;
+output reg y;
+
+always@(*)
+begin
+if(~s0&~s1)
+y=i0;
+else if(~s0&s1)
+y=i1;
+else if(s0&~s1)
+y=i2;
+else
+y=i3;
+end
+endmodule
+
+//Testbench
+module mux4_1_tb();
+reg s0,s1,i0,i1,i2,i3;
+wire y;
+integer i;
+mux4_1 dut(s0,s1,i0,i1,i2,i3,y);
+initial
+begin
+{s0,s1}=2'b00;
+{i0,i1,i2,i3}=4'b0000;
+end
+initial
+begin
+for(i=0;i<64;i=i+1)
+begin
+{s0,s1,i0,i1,i2,i3}=i;
+#10;
+end
+end
+initial
+$monitor("input s0=%b s1=%b i0=%b i1=%b i2=%b i3=%b and output y=%b",s0,s1,i0,i1,i2,i3,y);
+initial
+#700 $finish();
+endmodule
+
