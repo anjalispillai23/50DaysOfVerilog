@@ -1,0 +1,50 @@
+module reconfigurable_demux #(parameter N = 4) (//// Change to 2, 4, 8, etc.
+    input wire din,               // Single data input           
+    input wire [$clog2(N)-1:0] sel,          
+    output reg [N-1:0] y                    
+);
+
+    always @(*) begin
+        y = {N{1'b0}};     
+        y[sel] = din;       
+    end
+
+endmodule
+
+//Testbench
+
+`timescale 1ns / 1ps
+
+module tb_reconfigurable_demux();
+
+    parameter N = 4;
+    reg din;
+    reg [$clog2(N)-1:0] sel;
+    wire [N-1:0] dout;
+
+   
+    reconfigurable_demux #(N) uut (
+        .din(din),
+        .sel(sel),
+        .y(dout)
+    );
+
+    initial begin
+        $monitor("Time=%0t | sel=%0d | din=%b | dout=%b", $time, sel, din, dout);
+
+        din = 1'b1;
+        sel = 0; #10;
+        sel = 1; #10;
+        sel = 2; #10;
+        sel = 3; #10;
+
+        din = 1'b0;
+        sel = 0; #10;
+        sel = 2; #10;
+
+        $finish;
+    end
+
+endmodule
+
+
