@@ -1,0 +1,41 @@
+//Design Code
+
+
+module decoder2_4(en,i1,i0,y);
+output  [3:0]y;
+input en,i1,i0;
+assign y[0]=(en& ~i1 & ~i0);
+assign y[1]=(en& ~i1 & i0);
+assign y[2]=(en& i1 & ~i0);
+assign y[3]=(en& i1 & i0);
+endmodule
+
+//Testbench
+
+module decoder2_4_tb();
+reg en,i1,i0;
+wire [3:0]y;
+integer i;
+
+decoder2_4 dut(.en(en),.i1(i1),.i0(i0),.y(y));
+
+initial
+begin
+{en,i1,i0}=3'b0;
+end
+
+initial
+begin
+          for(i=0;i<8;i=i+1)
+begin
+	{en,i1,i0}=i;
+#10;
+
+end
+end
+
+initial
+$monitor(" input en=%b i1=%b i0=%b and output [3:0]y=%b",en,i1,i0,y);
+initial
+#200 $finish();
+endmodule
