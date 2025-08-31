@@ -1,0 +1,43 @@
+//Design Code
+
+module reconfigurable_mux #(parameter N = 8 ) (// N can be  put any value what we want,N=2,4,8 etc.
+	 input [N-1:0] i,
+    	 input [$clog2(N)-1:0] sel,
+   	 output reg y);
+                
+always @(*) begin
+    y = i[sel];
+end
+endmodule
+
+
+//Testbench
+
+`timescale 1ns/1ps
+module tb_reconfigurable_mux_();
+    parameter N = 8;
+	reg [N-1:0] i;
+    reg [$clog2(N)-1:0] sel;
+    wire y;
+    reconfigurable_mux_ #(N) dut (
+        .i(i),
+        .sel(sel),
+        .y(y)
+    );
+    integer k;  
+initial begin
+    i = 8'b10101010;
+    sel = 0;
+    for (k = 0; k < N; k = k + 1) begin
+        sel = k;      
+        #10;        
+    end
+
+    #10;
+    $finish;
+end
+    initial begin
+        $monitor("Time=%0t | sel=%0d | y=%b", $time, sel, y);
+    end
+endmodule
+
