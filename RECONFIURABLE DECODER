@@ -1,0 +1,54 @@
+//Design Code
+
+module reconfigurable_decoder #(parameter N=3)
+	( input [N-1:0] sel,
+	input en,
+		output reg [(1<<N)-1:0]y);
+always@(*)
+begin
+
+y={((1<<N)){1'b0}};
+y[sel]=1'b1;
+end
+endmodule
+
+//Testbench
+
+`timescale 1ns/1ps
+
+module tb_reconfigurable_decoder;
+
+parameter N=3;
+reg  [N-1:0] sel;
+reg en;
+wire [(1<<N)-1:0] y;
+
+reconfigurable_decoder #(N) dut (.sel(sel),.en(en),.y(y));
+
+integer k;
+initial
+begin
+
+{en,sel}=0;
+
+#10;
+
+en=1;
+for(k=0;k<(1<<N);k=k+1)
+begin
+sel=k;
+#10;
+end
+
+en=0;
+#10;
+$finish;
+end
+
+initial
+begin
+
+$monitor("Time=%t |en=%b |sel=%d |y=%b |",$time,en,sel,y);
+end
+endmodule
+
