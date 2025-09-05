@@ -1,0 +1,107 @@
+//Design Code
+// BCD-TO--SEGMENT DECODER
+
+//lt---lamp test
+//rbi--ripple banking input
+//rbo--ripple bnking output
+module bcd_7segment_decoder(lt,rbi,rbo,bcd,y);
+input lt,rbi;
+input [3:0]bcd;
+output reg [6:0]y;
+output reg rbo;
+
+always@(*)
+begin
+
+if(lt==0)
+begin
+y=7'b1111111;
+rbo=1;
+end
+
+else if(rbi==1&bcd==4'b0000)
+begin
+y=7'b0000000;
+rbo=1;
+end
+
+else
+begin
+rbo=1;
+case(bcd)
+	    4'b0000: y = 7'b1111110; // 0
+            4'b0001: y = 7'b0110000; // 1
+            4'b0010: y = 7'b1101101; // 2
+            4'b0011: y = 7'b1111001; // 3
+            4'b0100: y = 7'b0110011; // 4
+            4'b0101: y = 7'b1011011; // 5
+
+	    4'b0110: y = 7'b1011111; // 6
+            4'b0111: y = 7'b1110000; // 7
+	    4'b1000: y = 7'b1111111; // 8
+	    4'b1001: y = 7'b1111011; // 9
+default: y = 7'b0000000;
+endcase
+end
+end
+endmodule
+
+//Testbench
+`timescale 1ns/1ps
+module bcd_7segment_decoder_tb();
+    reg lt, rbi;
+    reg [3:0] bcd;
+    wire [6:0] y;
+    wire rbo;
+    integer i;
+
+    // DUT instantiation
+    bcd_7segment_decoder dut (
+        .lt(lt),
+        .rbi(rbi),
+        .bcd(bcd),
+        .rbo(rbo),
+        .y(y)
+    );
+
+    // Task to display the 7-seg pattern visually (common cathode)
+    task display_segments;
+        input [6:0] seg; // a b c d e f g
+        begin
+            // seg[6]=a, seg[5]=f, seg[4]=e, seg[3]=d, seg[2]=c, seg[1]=b, seg[0]=g
+            $display(" %s ", seg[6] ? " _ " : "   "); // a
+            $display("%s%s%s", seg[5] ? "|" : " ", seg[0] ? "_" : " ", seg[1] ? "|" : " "); // f,g,b
+            $display("%s%s%s", seg[4] ? "|" : " ", seg[3] ? "_" : " ", seg[2] ? "|" : " "); // e,d,c
+        end
+    endtask
+
+    initial begin
+        $monitor("Time=%0t | lt=%b | rbi=%b | bcd=%b | rbo=%b | y=%07b", 
+                  $time, lt, rbi, bcd, rbo, y);
+
+        // Initial conditions
+        lt = 0; rbi = 1; bcd = 4'b0000; #10; // Lamp test ON
+
+        // Lamp test OFF (normal operation)
+        lt = 1; rbi = 1; bcd = 4'b0000; #10;
+
+        // Test digits 0?9
+        for (i = 0; i < 10; i = i + 1) begin
+            bcd = i;
+            #10;
+            $display("\nDigit=%0d", i);
+            display_segments(y);
+        end
+
+        // Test ripple blanking (active low)
+        rbi = 0; bcd = 4'b0000; #10;
+        $display("\nRipple Blanking Active:");
+        display_segments(y);
+
+        $finish;
+    end
+endmodule
+
+
+
+
