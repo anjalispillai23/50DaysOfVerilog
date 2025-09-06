@@ -1,0 +1,41 @@
+//Design Code
+module s_r_latch(s,r,q,qbar);
+input s,r;
+output reg q;
+output qbar;
+
+always@(*)
+begin
+
+case({s,r})
+2'b00:q=q;
+2'b01:q=1'b0;
+2'b10:q=1'b1;
+2'b11:q=1'bx;
+endcase
+end
+assign qbar=~q;
+endmodule
+
+//testbench
+
+module s_r_latch_tb();
+reg s,r;
+wire q,qbar;
+integer i;
+s_r_latch dut(.s(s),.r(r),.q(q),.qbar(qbar));
+
+
+initial
+begin
+$monitor("Time=%t | s=%b | r=%b  |  q=%b  | qbar=%b",$time,s,r,q,qbar);
+
+for(i=0;i<4;i=i+1)
+begin
+{s,r}=i;
+#10;
+end
+#10;
+$finish();
+end
+endmodule
