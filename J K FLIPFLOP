@@ -1,0 +1,50 @@
+//Design Code
+module j_k_ff(
+    input clk, j, k,
+    output reg q,
+    output qbar
+);
+assign qbar = ~q;
+
+always @(posedge clk) begin
+    case ({j,k})
+        2'b00: q <= q;      
+        2'b01: q <= 0;     
+        2'b10: q <= 1;     
+        2'b11: q <= ~q;   
+    endcase
+end
+
+endmodule
+
+//Testbench
+
+module tb_j_k_ff();
+reg clk, j, k;
+wire q, qbar;
+integer i;
+
+j_k_ff dut(.clk(clk), .j(j), .k(k), .q(q), .qbar(qbar));
+
+
+initial begin
+    clk = 0;
+    forever #5 clk = ~clk; 
+end
+
+initial begin
+    j = 0; k = 0;  
+    $monitor("Time=%t | clk=%b | j=%b | k=%b | q=%b | qbar=%b", $time, clk, j, k, q, qbar);
+
+    #10;
+    for(i = 0; i < 4; i = i + 1) begin
+        {j, k} = i;
+        #10;  
+    end
+
+    #20;
+    $finish;
+end
+
+endmodule
+
