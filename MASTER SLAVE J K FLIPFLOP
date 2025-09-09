@@ -1,0 +1,63 @@
+//Design Code
+module master_j_k_ff(
+    input j, k, clk, rst,
+    output reg q, qbar
+);
+
+reg master_q; 
+
+always @(posedge clk or posedge rst) begin
+    if (rst) 
+        master_q <= 0;
+    else begin
+        case ({j, k})
+            2'b00: master_q <= master_q;    
+            2'b01: master_q <= 0;           
+            2'b10: master_q <= 1;           
+            2'b11: master_q <= ~master_q;  
+        endcase
+    end
+end
+
+always @(negedge clk or posedge rst) begin
+    if (rst) begin
+        q <= 0;
+        qbar <= 1;
+    end else begin
+        q <= master_q;
+        qbar <= ~master_q;
+    end
+end
+
+endmodule
+
+//Testbench
+
+module tb_master_j_k_ff();
+
+reg j, k, clk, rst;
+wire q, qbar;
+
+master_j_k_ff dut(.j(j), .k(k), .clk(clk), .rst(rst), .q(q), .qbar(qbar));
+
+initial begin
+    clk = 0;
+    forever #5 clk = ~clk;  
+end
+
+initial begin
+    $monitor("Time=%0t clk=%b j=%b k=%b q=%b qbar=%b", $time, clk, j, k, q, qbar);
+    
+    
+    rst = 1; j = 0; k = 0; #10;
+    rst = 0;
+    
+    
+    j=0; k=0; #10;  
+    j=0; k=1; #10;  
+    j=1; k=0; #10;  
+    j=1; k=1; #20;  
+    $finish;
+end
+
+endmodule
