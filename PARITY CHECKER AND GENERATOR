@@ -1,0 +1,34 @@
+// Design Code
+module parity_generator(
+input [3:0]data,
+output parity_bit);
+
+assign parity_bit=^data;
+endmodule
+
+module parity_checker(
+input [3:0]data,
+input parity_bit,
+output error);
+
+assign error=(^data)^parity_bit;
+endmodule
+//Testbench
+
+module parity_gen_checker_tb();
+reg [3:0]data;
+wire parity_bit,error;
+
+parity_generator pg(.data(data),.parity_bit(parity_bit));
+parity_checker pc(.data(data),.parity_bit(parity_bit),.error(error));
+
+initial begin
+        $monitor("Data=%b | Parity=%b | Error=%b", data, parity_bit, error);
+
+        data = 4'b1010; #10;
+        data = 4'b1111; #10;
+        data = 4'b0001; #10;
+        data = 4'b1000; #10;
+        $finish;
+    end
+endmodule
