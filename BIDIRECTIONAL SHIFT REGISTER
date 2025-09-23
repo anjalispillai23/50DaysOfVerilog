@@ -1,0 +1,52 @@
+//Testbench
+
+module bidirectional_shift_register_tb();
+reg clk,rst,dir,load,serial_in;
+reg [3:0] data_in;
+wire [3:0] q;
+
+bidirectional_shift_register dut(.clk(clk),.rst(rst),.dir(dir),.load(load),.data_in(data_in),.q(q),.serial_in(serial_in));
+
+always #5 clk = ~clk;
+
+    initial begin
+        clk = 0; rst = 1; load = 0; dir = 0; serial_in = 0; data_in = 4'b1010;
+        #10 rst = 0;
+
+    
+        load = 1; #10; load = 0;
+
+              dir = 0; serial_in= 1;
+        #50;
+
+        
+        dir = 1; serial_in = 0;
+        #50;
+
+        $stop;
+    end
+initial
+$monitor("Time=%t clk=%b rst=%b data_in=%b load=%b q=%b", $time, clk, rst, data_in, load, q);
+endmodule
+//Design Code
+
+module bidirectional_shift_register(
+    input clk, rst, dir, load, serial_in,
+    input [3:0] data_in,
+    output reg [3:0] q
+);
+
+always @(posedge clk or posedge rst) begin
+    if (rst)
+        q <= 4'b0000;         
+    else if (load)
+        q <= data_in;     
+    else begin
+        if (dir == 0)        
+            q <= {serial_in, q[3:1]};
+        else                
+            q <= {q[2:0], serial_in};
+    end
+end
+
+endmodule
